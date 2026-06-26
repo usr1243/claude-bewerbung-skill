@@ -28,10 +28,10 @@ Findet der Bot das Inserat nicht eindeutig → die wahrscheinlichsten Treffer mi
 
 ---
 
-## Datenablage (persistent im Vault)
-- Profil: `DEIN_VAULT/bewerbung/profil/profil.md`
-- Bewerbungs-Tracker: `DEIN_VAULT/bewerbung/profil/bewerbungen.md`
-- Generierte Dokumente: `DEIN_VAULT/bewerbung/dokumente/<Firma>_<Stelle>/`
+## Datenablage (persistent, lokaler Ordner deiner Wahl)
+- Profil: `DATEN_ORDNER/bewerbung/profil/profil.md`
+- Bewerbungs-Tracker: `DATEN_ORDNER/bewerbung/profil/bewerbungen.md`
+- Generierte Dokumente: `DATEN_ORDNER/bewerbung/dokumente/<Firma>_<Stelle>/`
 - Vorlagen-Referenz: `~/.claude/skills/bewerbung/templates/`
 - Scripts: `~/.claude/skills/bewerbung/scripts/`
 
@@ -301,5 +301,5 @@ Auf Nachfrage Übersicht/Statusupdate ausgeben.
 - **Wahrheitspflicht:** Nie Qualifikationen/Erfahrung erfinden. Nur Profil-Daten verwenden. Lücken ehrlich benennen.
 - **Profil zuerst:** Ohne Profil keine Dokumente — erst Phase 0.
 - **CH-Konventionen:** kompakter CV, Foto optional, Sprachen mit Niveau, „ss" statt „ß".
-- **Datenschutz:** Profil enthält persönliche Daten — bleibt lokal im Vault, nicht nach außen geben.
+- **Datenschutz:** Profil enthält persönliche Daten — bleibt lokal im Datenordner, nicht nach außen geben.
 - **Kein Auto-Absenden:** Der Bot bereitet alles vor; das finale Absenden/Hochladen macht der User selbst (Login-/Formular-Schritte).

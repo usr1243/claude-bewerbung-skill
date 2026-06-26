@@ -30,12 +30,12 @@ cp claude-bewerbung-skill/templates/* ~/.claude/skills/bewerbung/templates/
 cp claude-bewerbung-skill/scripts/* ~/.claude/skills/bewerbung/scripts/
 chmod +x ~/.claude/skills/bewerbung/scripts/*.sh
 
-# 3. Vault-Verzeichnis anlegen (Pfad frei wählbar)
-mkdir -p ~/claude-brain/bewerbung/profil
-mkdir -p ~/claude-brain/bewerbung/dokumente
+# 3. Datenordner anlegen (Pfad frei wählbar)
+mkdir -p ~/bewerbungen/bewerbung/profil
+mkdir -p ~/bewerbungen/bewerbung/dokumente
 ```
 
-Dann in `~/.claude/skills/bewerbung/SKILL.md` unter `## Datenablage` den Platzhalter `DEIN_VAULT` ersetzen durch deinen gewählten Pfad, z.B. `/Users/DEINNAME/claude-brain`.
+Dann in `~/.claude/skills/bewerbung/SKILL.md` unter `## Datenablage` den Platzhalter `DATEN_ORDNER` ersetzen durch deinen gewählten Pfad, z.B. `/Users/DEINNAME/bewerbungen`.
 
 ### Option B: Per Claude Bot installieren lassen
 
@@ -48,8 +48,8 @@ Installiere den Bewerbungs-Skill von https://github.com/usr1243/claude-bewerbung
 2. Erstelle ~/.claude/skills/bewerbung/SKILL.md mit dem Inhalt von SKILL.md
 3. Erstelle ~/.claude/skills/bewerbung/templates/ mit cv-ch.md, anschreiben.md, profil-vorlage.md
 4. Erstelle ~/.claude/skills/bewerbung/scripts/ mit perplexity_search.sh (chmod +x)
-5. Lege den Vault-Pfad fest: ~/claude-brain/bewerbung (Verzeichnisse erstellen)
-6. Ersetze in SKILL.md alle DEIN_VAULT-Platzhalter mit dem echten Pfad
+5. Lege den Datenordner-Pfad fest: ~/bewerbungen/bewerbung (Verzeichnisse erstellen)
+6. Ersetze in SKILL.md alle DATEN_ORDNER-Platzhalter mit dem echten Pfad
 7. Bestätige: "Skill installiert — starte mit /bewerbung"
 ```
 
@@ -77,7 +77,7 @@ Oder sag: *"Ich möchte mich bewerben"*, *"Suche mir einen Job in Zürich"*, *"E
 └── scripts/
     └── perplexity_search.sh    ← optionale Deep-Research (Perplexity-API)
 
-DEIN_VAULT/bewerbung/
+DATEN_ORDNER/bewerbung/         ← frei wählbarer lokaler Ordner (z.B. ~/bewerbungen)
 ├── profil/
 │   ├── profil.md               ← dein Profil (beim ersten Start erstellt)
 │   └── bewerbungen.md          ← Bewerbungs-Tracker
