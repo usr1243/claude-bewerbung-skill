@@ -7,14 +7,33 @@ description: >
 # Bewerbung — Schweizer Job- & Bewerbungs-Assistent
 
 Task-Agent der den kompletten Bewerbungs-Workflow abdeckt: Profil erfassen → Stellen
-suchen → vorschlagen → CV + Anschreiben maßschneidern → Bewerbungen tracken.
-Markt: **Schweiz**. Sprache der Dokumente: **DE oder EN je nach Stelleninserat**.
+suchen → vorschlagen → recherchieren → CV + Anschreiben maßschneidern → Bewerbungen tracken.
+Markt: **Schweiz** (Default), internationale Suche je nach Profil. Sprache der Dokumente: **DE oder EN je nach Stelleninserat**.
+
+---
+
+## Schnell-Modus: Stelle per Screenshot
+
+Wenn der Nutzer ein **Bild/Screenshot einer Stelle** schickt (statt selbst suchen zu lassen):
+
+1. Aus dem Bild extrahieren: **Firma, Jobtitel, Ort, Referenz-Nr.** (falls sichtbar) + Kern-Keywords.
+2. Das Live-Inserat finden:
+   - `mcp__jobspy__search_jobs` (Suchterm = Titel + Firma, Location = Ort)
+   - falls verbunden: TheirStack
+   - sonst: normale Websuche nach „<Firma> <Jobtitel> <Ort> Bewerbung/apply"
+3. Dem Nutzer den **direkten Bewerbungs-Link** + 1-Satz-Bestätigung liefern („Gefunden: <Stelle> bei <Firma>, hier bewerben: <Link>").
+4. Anbieten: *„Soll ich für diese Stelle die Firma + das Inserat recherchieren und dir CV + Anschreiben erstellen?"* → bei Ja weiter zu **Phase 2.5** (Profil aus Phase 0 muss dafür existieren).
+
+Findet der Bot das Inserat nicht eindeutig → die wahrscheinlichsten Treffer mit Links zeigen und nachfragen welcher es ist.
+
+---
 
 ## Datenablage (persistent im Vault)
-- Profil: `/Users/Lorenz/Downloads/code/Claude-Brain/agents (skills)/bewerbung/profil/profil.md`
-- Bewerbungs-Tracker: `.../bewerbung/profil/bewerbungen.md`
-- Generierte Dokumente: `.../bewerbung/dokumente/<Firma>_<Stelle>/`
+- Profil: `DEIN_VAULT/bewerbung/profil/profil.md`
+- Bewerbungs-Tracker: `DEIN_VAULT/bewerbung/profil/bewerbungen.md`
+- Generierte Dokumente: `DEIN_VAULT/bewerbung/dokumente/<Firma>_<Stelle>/`
 - Vorlagen-Referenz: `~/.claude/skills/bewerbung/templates/`
+- Scripts: `~/.claude/skills/bewerbung/scripts/`
 
 ---
 
@@ -41,6 +60,11 @@ Prüfe zuerst still ob JobSpy oder TheirStack bereits verbunden sind:
 > Riesige globale Jobdatenbank — ideal für internationale Suche und Nischenrollen.
 > Was installiert wird: nur eine URL-Verbindung zu deren Server, kein lokales Paket.
 > Sicherheit: SaaS-Dienst, du loggst dich per OAuth ein (wie "Login mit Google"). Kostenlos bis 200 Credits/Monat, danach $59/Monat.
+>
+> **Tool 3 — Perplexity Deep Research** *(optional, kostenpflichtig)*
+> Tiefe Live-Web-Recherche zu Firma, Standort, Kultur und Erfahrungsberichten — für besonders zugeschnittene Bewerbungen.
+> Kosten: prepaid auf deinem Perplexity-Konto, grob **~$5–14 pro 1'000 Anfragen + Token** → in der Praxis wenige Cent pro Recherche.
+> Braucht einen eigenen API-Key (`pplx-…`). **Wird nie automatisch genutzt — der Bot fragt jedes Mal vorher und nennt die Kosten.** Einrichtung wird später Schritt für Schritt erklärt, sobald du es zum ersten Mal nutzen willst.
 >
 > **Ohne diese Tools:** Ich suche trotzdem — aber über normale Websuche, das ist weniger präzise und kann Stellen verpassen die nicht öffentlich indexiert sind.
 >
@@ -91,6 +115,13 @@ Prüfe zuerst still ob JobSpy oder TheirStack bereits verbunden sind:
    **Block C — Werdegang:** Berufserfahrung (pro Station: Firma, Rolle, Zeitraum, 2–4 Achievements mit Zahlen), Ausbildung/Abschlüsse, Weiterbildungen/Zertifikate.
 
    **Block D — Skills & Sprachen:** Hard Skills/Tools, Soft Skills, Sprachen mit Niveau (z.B. Deutsch Muttersprache, Englisch C1, Französisch B1), Referenzen (vorhanden?).
+
+   Dann zwei gezielte Fragen für stärkere, ehrlichere Bewerbungen:
+   > *„Für jede wichtige Fähigkeit: Wo hast du sie schon konkret bewiesen? Gib mir Stichworte — z.B. ‚Excel: Reporting für 12 Filialen automatisiert'. Ich baue daraus eine Beweis-Liste."*
+   > *„Gibt es Schwächen, die ein Arbeitgeber sieht (z.B. Notendurchschnitt, Lücke im Lebenslauf, Quereinstieg)? Sollen wir die proaktiv ansprechen und entkräften? Wenn ja: was ist dein bestes Gegenargument?"*
+   > *„Nenn mir 1–2 Beispiele, wo du dir etwas selbst beigebracht oder eigenständig gelöst hast — falls eine Stelle mehr verlangt als du formal nachweisen kannst, nutze ich das als Argument."*
+
+   → Speichern in `## Stärken-Beweise`, `## Schwachpunkte` (mit Flag `aktiv ansprechen: ja/nein` + Gegenargument) und `## Eigenständigkeit` im Profil.
 
 4. Speichere alles strukturiert in `profil/profil.md` (Format: siehe Vorlage `templates/profil-vorlage.md`). Bestätige kurz.
 
@@ -152,6 +183,39 @@ Sortiert nach Match-Score. Dann fragen: *"Für welche Stelle(n) soll ich Bewerbu
 
 ---
 
+## Phase 2.5 — Recherche vor dem Schreiben (pro gewählter Stelle, vor Phase 3)
+
+Niemals direkt losschreiben. Erst ein kompaktes Recherche-Briefing erstellen, das in CV + Anschreiben einfliesst:
+
+**a) Branchenstandard:** Was erwarten Arbeitgeber für genau diese Rolle/Branche/Seniorität? Übliche Pflicht-Skills, Keywords, Tonalität. Quelle: 2–3 Vergleichsinserate (JobSpy/Websuche).
+
+**b) Firma:** Karriereseite, Werte/Mission, Produkte, aktuelle News. Ziel: 1–2 konkrete Anknüpfungspunkte, an denen man echte Auseinandersetzung mit der Firma erkennt (nicht „Ihr renommiertes Unternehmen"). Quelle: Websuche + Firmenseite.
+
+**c) Job-Offer im Detail:** Muss- vs. Kann-Anforderungen trennen, exakte Keywords und Tonalität des Inserats extrahieren.
+
+**d) Optional — Deep-Research über Perplexity (kostenpflichtig, immer erst fragen):**
+   Wenn tiefere Recherche zu Firma/Standort/Kultur den Match deutlich verbessern würde, fragen:
+   > *„Soll ich über die Perplexity-API tiefer recherchieren? Das kostet dich nur wenige Cent pro Abfrage (prepaid auf deinem Perplexity-Konto). Ja / Nein?"*
+   - **Nein:** mit Standard-Websuche weitermachen.
+   - **Ja, aber noch kein Key eingerichtet:** → Setup-Flow durchführen (siehe unten), dann nutzen.
+   - **Ja, Key vorhanden:** Wrapper aufrufen: `bash ~/.claude/skills/bewerbung/scripts/perplexity_search.sh "<konkrete Recherche-Frage zu Firma/Standort>"`
+   - **Wichtig:** auch bei eingerichtetem Key **jedes Mal vorher fragen** — nie automatisch abrechnen.
+
+   **Perplexity-Key Setup (einmalig, Key NIE im Chat eingeben):**
+   1. *„Geh auf perplexity.ai → Settings → Tab ‚API'. Lade dort etwas Guthaben auf (prepaid, z.B. $5)."*
+   2. *„Generiere einen API-Key (beginnt mit `pplx-`). Er wird nur einmal angezeigt — sofort kopieren."*
+   3. *„Trag den Key selbst in deinem Terminal ein (nicht hier im Chat):"*
+      ```
+      echo 'export PERPLEXITY_API_KEY="pplx-DEIN_KEY"' >> ~/.zshrc
+      ```
+      *„Dann ein neues Terminal öffnen."*
+   4. Prüfen ob gesetzt — **ohne den Wert auszugeben**: `[ -n "$PERPLEXITY_API_KEY" ] && echo "Key ist gesetzt" || echo "noch nicht gesetzt"`
+   > Begründung Sicherheit: Der Key darf nicht in den Chat und nicht als sichtbares CLI-Argument — sonst landet er im Klartext in Logs/Configs.
+
+**Ergebnis:** internes Briefing (3–6 Bullet-Punkte) — fliesst direkt in Phase 3 ein. Generisch, keine Annahmen über Person/Studienort.
+
+---
+
 ## Phase 3 — CV + Anschreiben erstellen (pro gewählter Stelle)
 
 1. **Sprache bestimmen:** Inserat auf Deutsch → Dokumente auf Deutsch. Inserat auf Englisch → auf Englisch. Im Zweifel nachfragen.
@@ -209,8 +273,13 @@ Sortiert nach Match-Score. Dann fragen: *"Für welche Stelle(n) soll ich Bewerbu
 
 **Qualitätsregeln für „hochstehende" Bewerbungen:**
 - Jede Aussage auf das Inserat zugespitzt, keine generische Massenbewerbung.
+- **Recherche-Briefing aus Phase 2.5 einarbeiten:** konkrete Firmen-Anknüpfungspunkte im Aufhänger nutzen, Inserat-Keywords aufgreifen, Tonalität an Branchenstandard anpassen.
 - Achievements > Aufgaben (Resultate mit Zahlen statt „zuständig für…").
+- **Skill-Beweis-Prinzip:** Jede behauptete Fähigkeit mit einem konkreten Beleg aus `## Stärken-Beweise` koppeln — „kann X, bewiesen durch Y". Nie eine Fähigkeit ohne Beleg behaupten, nie generische Floskeln („teamfähig, motiviert").
+- **Schwächen-Handling:** Wenn `## Schwachpunkte` ein Feld mit `aktiv ansprechen: ja` enthält (z.B. Noten, Lücke), die Schwäche im Anschreiben kurz und selbstbewusst benennen und sofort mit dem hinterlegten Gegenargument auffangen — nicht verstecken, aber auch nicht breittreten.
+- **Eigenständigkeit als Hebel:** Wenn eine Stelle mehr verlangt als der Nutzer formal nachweisen kann, das Selbstlern-/Eigenständigkeits-Beispiel aus `## Eigenständigkeit` einsetzen — konkret mit Beispiel, nicht als Floskel.
 - **Schreibstil aus Profil anwenden:** Wenn `## Schreibstil` in `profil.md` ein STILPROFIL enthält, aktiviere Modus B des `anthropic-skills:mein-schreibstil`-Skills. Struktur und CH-Format bleiben fix — aber Ton, Satzmuster, Wortwahl sowie alle IMMER-TUN- und NIE-TUN-Regeln aus dem Profil greifen vollständig für Anschreiben und Kurzprofil-Text.
+- **KI-Sprache raus:** Vor dem finalen Output den `humanizer`-Skill auf Anschreiben + Kurzprofil anwenden — der Text muss nach dem Nutzer klingen, nicht nach einem Bot.
 - Keine Übertreibung, keine erfundenen Fakten.
 - DE: korrekte Umlaute, CH-Schreibweise (ß → ss). EN: professionelles Business-Englisch.
 

@@ -43,6 +43,21 @@ last_updated: YYYY-MM-DD
 - **Hard Skills / Tools:** 
 - **Soft Skills:** 
 
+## Stärken-Beweise
+> Pro wichtiger Fähigkeit: womit schon konkret bewiesen (in eigenen Worten, Stichworte reichen).
+- [Fähigkeit] → [konkreter Beleg, z.B. „Reporting für 12 Filialen automatisiert"]
+- [Fähigkeit] → [Beleg]
+
+## Schwachpunkte
+> Optional. Nur ausfüllen wenn vorhanden und relevant.
+- **Schwachpunkt:** (z.B. Notendurchschnitt, Lücke im CV, Quereinstieg)
+- **Aktiv ansprechen:** ja / nein
+- **Gegenargument:** (warum trotzdem passend)
+
+## Eigenständigkeit
+> 1–2 Beispiele für Selbstlernfähigkeit / eigenständiges Lösen — als Argument wenn Anforderung > Erfahrung.
+- [Beispiel: „Skill X selbst beigebracht für Projekt Y"]
+
 ## Sprachen
 - Deutsch: (Muttersprache / C2 / …)
 - Englisch: (C1 / …)
@@ -50,6 +65,15 @@ last_updated: YYYY-MM-DD
 
 ## Referenzen
 - vorhanden: ja/nein (auf Anfrage / Kontaktangaben)
+
+## Schreibstil
+- **Tonalität:** (formal / halbformal / locker)
+- **Anrede:** (du / Sie / neutral)
+- **Satzlänge:** (kurz & prägnant / mittel / lang)
+- **Wortwahl:** (einfach / fachspezifisch / kreativ)
+- **Besonderheiten:** (z.B. direkter Einstieg, keine Floskeln, Aufzählungen bevorzugt)
+- **Zusammenfassung:** (2 Sätze: "Du schreibst X. Das übernehme ich so.")
+- **Quelle:** (Textbeispiel / Beschreibung des Users / Standard CH)
 
 ## Notizen
 - Besonderheiten, Lücken im Lebenslauf (mit Erklärung), Präferenzen
